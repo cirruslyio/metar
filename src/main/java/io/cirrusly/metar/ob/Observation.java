@@ -8,5 +8,10 @@ public abstract class Observation {
   /**
    * Returns the observation as an encoded observation.
    */
-  public abstract String encode();
+  public abstract String getEncoded();
+
+  /**
+   * Returns the station of the observation.
+   */
+  public abstract String getStation();
 }
