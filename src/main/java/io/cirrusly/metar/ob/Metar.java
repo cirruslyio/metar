@@ -7,7 +7,9 @@ public class Metar extends Observation {
 
   private String day;
   private String encoded;
+  private String presentWeather;
   private String reportModifier;
+  private String skyCondition;
   private String station;
   private String time;
   private String visibility;
@@ -50,12 +52,28 @@ public class Metar extends Observation {
     this.encoded = encoded;
   }
 
+  public String getPresentWeather() {
+    return presentWeather;
+  }
+
+  public void setPresentWeather(String presentWeather) {
+    this.presentWeather = presentWeather;
+  }
+
   public String getReportModifier() {
     return reportModifier;
   }
 
   public void setReportModifier(String reportModifier) {
     this.reportModifier = reportModifier;
+  }
+
+  public String getSkyCondition() {
+    return skyCondition;
+  }
+
+  public void setSkyCondition(String skyCondition) {
+    this.skyCondition = skyCondition;
   }
 
   @Override
