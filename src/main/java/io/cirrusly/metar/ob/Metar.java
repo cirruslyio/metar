@@ -10,9 +10,11 @@ public class Metar extends Observation {
   private String reportModifier;
   private String station;
   private String time;
+  private String visibility;
   private String windDirection;
   private String windGust;
   private String windSpeed;
+  private String windVariability;
 
   /**
    * Initializes the METAR with the required fields.
@@ -76,6 +78,14 @@ public class Metar extends Observation {
     this.time = time;
   }
 
+  public String getVisibility() {
+    return visibility;
+  }
+
+  public void setVisibility(String visibility) {
+    this.visibility = visibility;
+  }
+
   public String getWindDirection() {
     return windDirection;
   }
@@ -98,5 +108,13 @@ public class Metar extends Observation {
 
   public void setWindSpeed(String windSpeed) {
     this.windSpeed = windSpeed;
+  }
+
+  public String getWindVariability() {
+    return windVariability;
+  }
+
+  public void setWindVariability(String windVariability) {
+    this.windVariability = windVariability;
   }
 }
