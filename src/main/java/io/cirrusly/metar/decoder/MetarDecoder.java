@@ -45,6 +45,10 @@ public class MetarDecoder implements Decoder {
     metar.setVisibility(parseVisibility());
     metar.setPresentWeather(parsePresentWeather());
     metar.setSkyCondition(parseSkyCondition());
+    metar.setTemperature(parseTemperature());
+    metar.setDewpoint(parseDewpoint());
+    metar.setAltimeter(parseAltimeter());
+    metar.setRemarks(parseRemarks());
     return metar;
   }
 
@@ -106,5 +110,29 @@ public class MetarDecoder implements Decoder {
 
   protected String parseSkyCondition() throws DecoderError {
     return getPrefixMatcher().group(12);
+  }
+
+  protected String parseTemperature() throws DecoderError {
+    String temperatureGroup = getPrefixMatcher().group(13);
+    if (temperatureGroup != null && temperatureGroup.indexOf('/') >= 0) {
+      return temperatureGroup.substring(0, temperatureGroup.indexOf('/'));
+    }
+    return temperatureGroup;
+  }
+
+  protected String parseDewpoint() throws DecoderError {
+    String temperatureGroup = getPrefixMatcher().group(13);
+    if (temperatureGroup != null && temperatureGroup.indexOf('/') >= 0) {
+      return temperatureGroup.substring(temperatureGroup.indexOf('/') + 1);
+    }
+    return null;
+  }
+
+  protected String parseAltimeter() throws DecoderError {
+    return getPrefixMatcher().group(14);
+  }
+
+  protected String parseRemarks() throws DecoderError {
+    return getPrefixMatcher().group(15);
   }
 }

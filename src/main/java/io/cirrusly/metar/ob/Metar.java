@@ -5,12 +5,16 @@ package io.cirrusly.metar.ob;
  */
 public class Metar extends Observation {
 
+  private String altimeter;
   private String day;
+  private String dewpoint;
   private String encoded;
   private String presentWeather;
+  private String remarks;
   private String reportModifier;
   private String skyCondition;
   private String station;
+  private String temperature;
   private String time;
   private String visibility;
   private String windDirection;
@@ -29,12 +33,28 @@ public class Metar extends Observation {
     this.station = station;
   }
 
+  public String getAltimeter() {
+    return altimeter;
+  }
+
+  public void setAltimeter(String altimeter) {
+    this.altimeter = altimeter;
+  }
+
   public String getDay() {
     return day;
   }
 
   public void setDay(String day) {
     this.day = day;
+  }
+
+  public String getDewpoint() {
+    return dewpoint;
+  }
+
+  public void setDewpoint(String dewpoint) {
+    this.dewpoint = dewpoint;
   }
 
   /**
@@ -58,6 +78,14 @@ public class Metar extends Observation {
 
   public void setPresentWeather(String presentWeather) {
     this.presentWeather = presentWeather;
+  }
+
+  public String getRemarks() {
+    return remarks;
+  }
+
+  public void setRemarks(String remarks) {
+    this.remarks = remarks;
   }
 
   public String getReportModifier() {
@@ -86,6 +114,14 @@ public class Metar extends Observation {
    */
   public void setStation(String station) {
     this.station = station;
+  }
+
+  public String getTemperature() {
+    return temperature;
+  }
+
+  public void setTemperature(String temperature) {
+    this.temperature = temperature;
   }
 
   public String getTime() {

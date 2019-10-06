@@ -67,6 +67,10 @@ public class MetarDecoderTest {
     assertEquals(record.getDescription(), record.getVisibility(), metar.getVisibility());
     assertEquals(record.getDescription(), record.getPresentWeather(), metar.getPresentWeather());
     assertEquals(record.getDescription(), record.getSkyCondition(), metar.getSkyCondition());
+    assertEquals(record.getDescription(), record.getTemperature(), metar.getTemperature());
+    assertEquals(record.getDescription(), record.getDewpoint(), metar.getDewpoint());
+    assertEquals(record.getDescription(), record.getAltimeter(), metar.getAltimeter());
+    assertEquals(record.getDescription(), record.getRemarks(), metar.getRemarks());
   }
 
   @Parameters
@@ -86,6 +90,10 @@ public class MetarDecoderTest {
       record.setVisibility(emptyToNull(csvRecord.get("visibility")));
       record.setPresentWeather(emptyToNull(csvRecord.get("present_weather")));
       record.setSkyCondition(emptyToNull(csvRecord.get("sky_condition")));
+      record.setTemperature(emptyToNull(csvRecord.get("temperature")));
+      record.setDewpoint(emptyToNull(csvRecord.get("dewpoint")));
+      record.setAltimeter(emptyToNull(csvRecord.get("altimeter")));
+      record.setRemarks(emptyToNull(csvRecord.get("remarks")));
       records.add(record);
     }
     return records;
