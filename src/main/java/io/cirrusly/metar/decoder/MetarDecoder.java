@@ -43,6 +43,7 @@ public class MetarDecoder implements Decoder {
     metar.setWindGust(parseWindGust());
     metar.setWindVariability(parseWindVariability());
     metar.setVisibility(parseVisibility());
+    metar.setRunwayVisualRange(parseRunwayVisualRange());
     metar.setPresentWeather(parsePresentWeather());
     metar.setSkyCondition(parseSkyCondition());
     metar.setTemperature(parseTemperature());
@@ -98,6 +99,10 @@ public class MetarDecoder implements Decoder {
 
   protected String parseVisibility() throws DecoderError {
     return getPrefixMatcher().group(9);
+  }
+
+  protected String parseRunwayVisualRange() throws DecoderError {
+    return getPrefixMatcher().group(10);
   }
 
   protected String parsePresentWeather() throws DecoderError {

@@ -65,6 +65,8 @@ public class MetarDecoderTest {
     assertEquals(record.getDescription(), record.getWindGust(), metar.getWindGust());
     assertEquals(record.getDescription(), record.getWindVariability(), metar.getWindVariability());
     assertEquals(record.getDescription(), record.getVisibility(), metar.getVisibility());
+    assertEquals(record.getDescription(), record.getRunwayVisualRange(),
+        metar.getRunwayVisualRange());
     assertEquals(record.getDescription(), record.getPresentWeather(), metar.getPresentWeather());
     assertEquals(record.getDescription(), record.getSkyCondition(), metar.getSkyCondition());
     assertEquals(record.getDescription(), record.getTemperature(), metar.getTemperature());
@@ -88,6 +90,7 @@ public class MetarDecoderTest {
       record.setWindGust(emptyToNull(csvRecord.get("wind_gust")));
       record.setWindVariability(emptyToNull(csvRecord.get("wind_variability")));
       record.setVisibility(emptyToNull(csvRecord.get("visibility")));
+      record.setRunwayVisualRange(emptyToNull(csvRecord.get("runway_visual_range")));
       record.setPresentWeather(emptyToNull(csvRecord.get("present_weather")));
       record.setSkyCondition(emptyToNull(csvRecord.get("sky_condition")));
       record.setTemperature(emptyToNull(csvRecord.get("temperature")));

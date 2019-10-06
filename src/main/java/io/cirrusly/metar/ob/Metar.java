@@ -12,6 +12,7 @@ public class Metar extends Observation {
   private String presentWeather;
   private String remarks;
   private String reportModifier;
+  private String runwayVisualRange;
   private String skyCondition;
   private String station;
   private String temperature;
@@ -94,6 +95,14 @@ public class Metar extends Observation {
 
   public void setReportModifier(String reportModifier) {
     this.reportModifier = reportModifier;
+  }
+
+  public String getRunwayVisualRange() {
+    return runwayVisualRange;
+  }
+
+  public void setRunwayVisualRange(String runwayVisualRange) {
+    this.runwayVisualRange = runwayVisualRange;
   }
 
   public String getSkyCondition() {
