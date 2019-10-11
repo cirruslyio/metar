@@ -1,6 +1,7 @@
 package io.cirrusly.metar.decoder;
 
 import static org.junit.Assert.assertEquals;
+import io.cirrusly.metar.ob.Metar;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -12,8 +13,11 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import io.cirrusly.metar.ob.Metar;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+@RunWith(Parameterized.class)
 public class MetarDecoderTest {
 
   /**
@@ -36,24 +40,43 @@ public class MetarDecoderTest {
     public int getId() {
       return id;
     }
+
+    public String getDescription() {
+      return "Row " + id + " " + getStation() + " " + getDay() + getTime();
+    }
+  }
+
+  private TestRecord record;
+
+  public MetarDecoderTest(TestRecord record) {
+    this.record = record;
   }
 
   @Test
   public void testMetars() throws IOException, DecoderError {
-    for (TestRecord record : readCsvRecords()) {
-      Metar metar = (Metar) DecoderFactory.decode(record.getEncoded());
-      assertEquals(record.getEncoded(), metar.getEncoded());
-      assertEquals(record.getStation(), metar.getStation());
-      assertEquals(record.getDay(), metar.getDay());
-      assertEquals(record.getTime(), metar.getTime());
-      assertEquals(record.getReportModifier(), metar.getReportModifier());
-      assertEquals(record.getWindDirection(), metar.getWindDirection());
-      assertEquals(record.getWindSpeed(), metar.getWindSpeed());
-      assertEquals(record.getWindGust(), metar.getWindGust());
-    }
+    Metar metar = (Metar) DecoderFactory.decode(record.getEncoded());
+    assertEquals(record.getDescription(), record.getEncoded(), metar.getEncoded());
+    assertEquals(record.getDescription(), record.getStation(), metar.getStation());
+    assertEquals(record.getDescription(), record.getDay(), metar.getDay());
+    assertEquals(record.getDescription(), record.getTime(), metar.getTime());
+    assertEquals(record.getDescription(), record.getReportModifier(), metar.getReportModifier());
+    assertEquals(record.getDescription(), record.getWindDirection(), metar.getWindDirection());
+    assertEquals(record.getDescription(), record.getWindSpeed(), metar.getWindSpeed());
+    assertEquals(record.getDescription(), record.getWindGust(), metar.getWindGust());
+    assertEquals(record.getDescription(), record.getWindVariability(), metar.getWindVariability());
+    assertEquals(record.getDescription(), record.getVisibility(), metar.getVisibility());
+    assertEquals(record.getDescription(), record.getRunwayVisualRange(),
+        metar.getRunwayVisualRange());
+    assertEquals(record.getDescription(), record.getPresentWeather(), metar.getPresentWeather());
+    assertEquals(record.getDescription(), record.getSkyCondition(), metar.getSkyCondition());
+    assertEquals(record.getDescription(), record.getTemperature(), metar.getTemperature());
+    assertEquals(record.getDescription(), record.getDewpoint(), metar.getDewpoint());
+    assertEquals(record.getDescription(), record.getAltimeter(), metar.getAltimeter());
+    assertEquals(record.getDescription(), record.getRemarks(), metar.getRemarks());
   }
 
-  public List<TestRecord> readCsvRecords() throws IOException {
+  @Parameters
+  public static List<TestRecord> readCsvRecords() throws IOException {
     List<TestRecord> records = new ArrayList<>();
     for (CSVRecord csvRecord : parseCsv()) {
       TestRecord record =
@@ -62,15 +85,24 @@ public class MetarDecoderTest {
       record.setDay(csvRecord.get("day"));
       record.setTime(csvRecord.get("time"));
       record.setReportModifier(emptyToNull(csvRecord.get("report_modifier")));
-      record.setWindDirection(csvRecord.get("wind_direction"));
-      record.setWindSpeed(csvRecord.get("wind_speed"));
+      record.setWindDirection(emptyToNull(csvRecord.get("wind_direction")));
+      record.setWindSpeed(emptyToNull(csvRecord.get("wind_speed")));
       record.setWindGust(emptyToNull(csvRecord.get("wind_gust")));
+      record.setWindVariability(emptyToNull(csvRecord.get("wind_variability")));
+      record.setVisibility(emptyToNull(csvRecord.get("visibility")));
+      record.setRunwayVisualRange(emptyToNull(csvRecord.get("runway_visual_range")));
+      record.setPresentWeather(emptyToNull(csvRecord.get("present_weather")));
+      record.setSkyCondition(emptyToNull(csvRecord.get("sky_condition")));
+      record.setTemperature(emptyToNull(csvRecord.get("temperature")));
+      record.setDewpoint(emptyToNull(csvRecord.get("dewpoint")));
+      record.setAltimeter(emptyToNull(csvRecord.get("altimeter")));
+      record.setRemarks(emptyToNull(csvRecord.get("remarks")));
       records.add(record);
     }
     return records;
   }
 
-  private String emptyToNull(String value) {
+  private static String emptyToNull(String value) {
     if (value != null && value.isEmpty()) {
       return null;
     }
@@ -78,7 +110,7 @@ public class MetarDecoderTest {
   }
 
 
-  public CSVParser parseCsv() throws IOException {
+  public static CSVParser parseCsv() throws IOException {
     Reader rdr = new StringReader(readCsv());
     return CSVParser.parse(rdr, CSVFormat.EXCEL.withHeader());
   }

@@ -10,21 +10,21 @@ import java.util.regex.Pattern;
  */
 public class MetarDecoder implements Decoder {
 
-  private static final Pattern METAR_FORMAT = Pattern.compile(
-      // Station, Day, Hour, Report Modifier, Winds
-      "^([A-Z0-9]{4}) ([0-9]{2})([0-9]{4}Z) (AUTO|COR)? ?(\\d{3}|VRB)(\\d{2,3})(G\\d{2,3})?KT "
-      // Wind variability, visibility (SM)
-      + "([0-9]{3}V[0-9]{3})? ?(0SM|M?[1-9][0-9/ ]{0,4}SM) "
-      // RVR
-      + "(R[0-9]{2}[LRC]?\\/[PM]?[0-9]{4}(?:V[0-9]{4})?FT)? "
+  public static final Pattern METAR_FORMAT = Pattern.compile(
+      // Station, Day, Time, Report Modifier
+      "^([A-Z0-9]{4}) ([0-9]{2})([0-9]{4}Z) (AUTO|COR)? ?"
+      // Wind, Wind Variability
+      + "(?:(\\d{3}|VRB)?(\\d{2,3})(G\\d{2,3})?KT)? ?([0-9]{3}V[0-9]{3})? ?"
+      // Visibility, RVR
+      + "(0SM|M?[1-9][0-9/ ]{0,4}SM)? ?(R[0-9]{2}[LRC]?\\/[PM]?[0-9]{4}(?:V[0-9]{4})?FT)? ?"
       // Present Weather
-      + "?((?: ?(?:[-+]?|VC)(?:MI|PR|BC|DR|BL|SH|TS|FZ|DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU"
-      // Present Weather continued...
-      + "|SA|HZ|PY|PO|SQ|FC|SS|DS))*) "
+      + "((?: ?(?:[-+]?|VC)(?:MI|PR|BC|DR|BL|SH|TS|FZ|DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU"
+      // Present Weather continued
+      + "|SA|HZ|PY|PO|SQ|FC|SS|DS))*) ?"
       // Sky Condition
-      + "?((?: ?(?:SKC|CLR|FEW[0-9]{3}|SCT[0-9]{3}|BKN[0-9]{3}|OVC[0-9]{3}))+) "
+      + "((?: ?(?:SKC|CLR|FEW[0-9]{3}|SCT[0-9]{3}|BKN[0-9]{3}|OVC[0-9]{3}))+|VV[0-9]{3})? ?"
       // Temperature/Dewpoint, Altimeter, Remarks
-      + "([0-9]{2}(?:/[0-9]{2})?)? (A(?:M|[0-9]{4})) (RMK.*)");
+      + "([0-9]{2}(?:\\/[0-9]{2})?)? ?(A(?:M|[0-9]{4}))? ?(RMK.*)?");
 
   private String encoded;
 
@@ -41,6 +41,15 @@ public class MetarDecoder implements Decoder {
     metar.setWindDirection(parseWindDirection());
     metar.setWindSpeed(parseWindSpeed());
     metar.setWindGust(parseWindGust());
+    metar.setWindVariability(parseWindVariability());
+    metar.setVisibility(parseVisibility());
+    metar.setRunwayVisualRange(parseRunwayVisualRange());
+    metar.setPresentWeather(parsePresentWeather());
+    metar.setSkyCondition(parseSkyCondition());
+    metar.setTemperature(parseTemperature());
+    metar.setDewpoint(parseDewpoint());
+    metar.setAltimeter(parseAltimeter());
+    metar.setRemarks(parseRemarks());
     return metar;
   }
 
@@ -82,5 +91,53 @@ public class MetarDecoder implements Decoder {
       return windGust.substring(1);
     }
     return null;
+  }
+
+  protected String parseWindVariability() throws DecoderError {
+    return getPrefixMatcher().group(8);
+  }
+
+  protected String parseVisibility() throws DecoderError {
+    return getPrefixMatcher().group(9);
+  }
+
+  protected String parseRunwayVisualRange() throws DecoderError {
+    return getPrefixMatcher().group(10);
+  }
+
+  protected String parsePresentWeather() throws DecoderError {
+    String pw = getPrefixMatcher().group(11);
+    if (pw != null && pw.isEmpty()) {
+      return null;
+    }
+    return pw;
+  }
+
+  protected String parseSkyCondition() throws DecoderError {
+    return getPrefixMatcher().group(12);
+  }
+
+  protected String parseTemperature() throws DecoderError {
+    String temperatureGroup = getPrefixMatcher().group(13);
+    if (temperatureGroup != null && temperatureGroup.indexOf('/') >= 0) {
+      return temperatureGroup.substring(0, temperatureGroup.indexOf('/'));
+    }
+    return temperatureGroup;
+  }
+
+  protected String parseDewpoint() throws DecoderError {
+    String temperatureGroup = getPrefixMatcher().group(13);
+    if (temperatureGroup != null && temperatureGroup.indexOf('/') >= 0) {
+      return temperatureGroup.substring(temperatureGroup.indexOf('/') + 1);
+    }
+    return null;
+  }
+
+  protected String parseAltimeter() throws DecoderError {
+    return getPrefixMatcher().group(14);
+  }
+
+  protected String parseRemarks() throws DecoderError {
+    return getPrefixMatcher().group(15);
   }
 }
